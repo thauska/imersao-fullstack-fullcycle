@@ -7,6 +7,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// Account represents a model account
 type Account struct {
 	Base      `valid:"required"`
 	OwnerName string    `json:"owner_name" valid:"notnull"`
@@ -15,6 +16,7 @@ type Account struct {
 	PixKeys   []*PixKey `valid:"-"`
 }
 
+//isValid perform validation of a account
 func (account *Account) isValid() error {
 	_, err := govalidator.ValidateStruct(account)
 	if err != nil {
@@ -23,6 +25,7 @@ func (account *Account) isValid() error {
 	return nil
 }
 
+// NewAccount return a new instance of a Account
 func NewAccount(bank *Bank, number string, ownerName string) (*Account, error) {
 	account := Account{
 		OwnerName: ownerName,

@@ -9,22 +9,29 @@ import (
 )
 
 const (
-	TransactionPending   string = "pending"
-	TransactionCompleted string = "completed"
-	TransactionError     string = "error"
+	// TransactionPending represents a pending transaction
+	TransactionPending string = "pending"
+	// TransactionConfirmed represents a confirmed transaction
 	TransactionConfirmed string = "confirmed"
+	// TransactionCompleted represents a completed transaction
+	TransactionCompleted string = "completed"
+	// TransactionError represents a error transaction
+	TransactionError string = "error"
 )
 
+// TransactionRepositoryInterface represents a interface of all operations
 type TransactionRepositoryInterface interface {
 	Register(transaction *Transaction) error
 	Save(transaction *Transaction) error
 	Find(id string) (*Transaction, error)
 }
 
+// Transactions represents a list of transactions
 type Transactions struct {
 	Transaction []Transaction
 }
 
+// Transaction represents a model transaction
 type Transaction struct {
 	Base              `valid:"required"`
 	AccountForm       *Account `valid:"-"`
@@ -35,6 +42,7 @@ type Transaction struct {
 	CancelDescription string   `json:"cancel-description" valid:"notnull"`
 }
 
+//isValid perform validation of a pix transaction
 func (transaction *Transaction) isValid() error {
 	_, err := govalidator.ValidateStruct(transaction)
 
@@ -56,6 +64,7 @@ func (transaction *Transaction) isValid() error {
 	return nil
 }
 
+// NewTransaction return a new instance of a Transaction
 func NewTransaction(accountFrom *Account, amount float64, pixKeyTo *PixKey, description string) (*Transaction, error) {
 	transaction := Transaction{
 		AccountForm: accountFrom,
@@ -76,6 +85,7 @@ func NewTransaction(accountFrom *Account, amount float64, pixKeyTo *PixKey, desc
 	return &transaction, nil
 }
 
+// Complete completes a transaction
 func (transaction *Transaction) Complete() error {
 	transaction.Status = TransactionCompleted
 	transaction.UpdatedAt = time.Now()
@@ -83,6 +93,7 @@ func (transaction *Transaction) Complete() error {
 	return err
 }
 
+// Confirm confirm a transaction
 func (transaction *Transaction) Confirm() error {
 	transaction.Status = TransactionConfirmed
 	transaction.UpdatedAt = time.Now()
@@ -90,6 +101,7 @@ func (transaction *Transaction) Confirm() error {
 	return err
 }
 
+// Cancel cancels a transaction
 func (transaction *Transaction) Cancel(description string) error {
 	transaction.Status = TransactionError
 	transaction.UpdatedAt = time.Now()

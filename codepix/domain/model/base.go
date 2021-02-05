@@ -10,6 +10,7 @@ func init() {
 	govalidator.SetFieldsRequiredByDefault(true)
 }
 
+// Base represents base information for various models
 type Base struct {
 	ID        string    `json:"id" valid:"uuid"`
 	CreatedAt time.Time `json:"created_at" valid:"-"`

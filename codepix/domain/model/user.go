@@ -7,12 +7,14 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// User represents a model user
 type User struct {
 	Base  `valid:"required"`
 	Name  string `json:"name" valid:"notnull"`
 	Email string `json:"email" valid:"notnull"`
 }
 
+//isValid perform validation of a user
 func (user *User) isValid() error {
 	_, err := govalidator.ValidateStruct(user)
 	if err != nil {
@@ -21,6 +23,7 @@ func (user *User) isValid() error {
 	return nil
 }
 
+// NewUser return a new instance of a User
 func NewUser(name string, email string) (*User, error) {
 	user := User{
 		Name:  name,

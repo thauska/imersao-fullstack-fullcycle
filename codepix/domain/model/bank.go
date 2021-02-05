@@ -7,6 +7,11 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+func init() {
+	govalidator.SetFieldsRequiredByDefault(true)
+}
+
+// Bank represents a model bank
 type Bank struct {
 	Base     `valid:"required"`
 	Code     string     `json:"code" valid:"notnull"`
@@ -14,6 +19,7 @@ type Bank struct {
 	Accounts []*Account `valid:"-"`
 }
 
+//isValid perform validation of a bank
 func (bank *Bank) isValid() error {
 	_, err := govalidator.ValidateStruct(bank)
 	if err != nil {
@@ -22,6 +28,7 @@ func (bank *Bank) isValid() error {
 	return nil
 }
 
+// NewBank return a new instance of a Bank
 func NewBank(code string, name string) (*Bank, error) {
 	bank := Bank{
 		Code: code,
