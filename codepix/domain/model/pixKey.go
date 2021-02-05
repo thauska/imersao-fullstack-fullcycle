@@ -11,7 +11,7 @@ import (
 // PixKeyRepositoryInterface represents a interface of all operations
 type PixKeyRepositoryInterface interface {
 	RegisterKey(pixKey *PixKey) (*PixKey, error)
-	FindKeyByKind(key string, kind string) (*PixKey, error)
+	FindKeyByKind(kind string) (*PixKey, error)
 	AddBank(bank *Bank) error
 	AddAccount(account *Account) error
 	FindAccount(id string) (*Account, error)
@@ -32,11 +32,11 @@ func (pixKey *PixKey) isValid() error {
 	_, err := govalidator.ValidateStruct(pixKey)
 
 	if pixKey.Kind != "email" && pixKey.Kind != "cpf" {
-		return errors.New("Invalid type of key")
+		return errors.New("invalid type of key")
 	}
 
 	if pixKey.Status != "active" && pixKey.Status != "inactive" {
-		return errors.New("Invalid status")
+		return errors.New("invalid status")
 	}
 
 	if err != nil {
@@ -46,16 +46,18 @@ func (pixKey *PixKey) isValid() error {
 }
 
 // NewPixKey return a new instance of a PixKey
-func NewPixKey(account *Account, kind string, key string) (*PixKey, error) {
+func NewPixKey(kind string, account *Account, key string) (*PixKey, error) {
 	pixKey := PixKey{
-		Kind:    kind,
-		Key:     key,
-		Account: nil,
-		Status:  "active",
+		Kind:      kind,
+		Account:   account,
+		AccountID: account.ID,
+		Key:       key,
+		Status:    "active",
 	}
 
 	pixKey.ID = uuid.NewV4().String()
 	pixKey.CreatedAt = time.Now()
+	pixKey.UpdatedAt = time.Now()
 
 	err := pixKey.isValid()
 	if err != nil {
