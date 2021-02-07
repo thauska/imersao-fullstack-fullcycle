@@ -34,12 +34,14 @@ type Transactions struct {
 // Transaction represents a model transaction
 type Transaction struct {
 	Base              `valid:"required"`
-	AccountForm       *Account `valid:"-"`
-	Amount            float64  `json:"amount" valid:"notnull"`
+	AccountFrom       *Account `valid:"-"`
+	AccountFromID     string   `gorm:"column:account_from_id;type:uuid;" valid:"notnull"`
+	Amount            float64  `json:"amount" gorm:"type:float" valid:"notnull"`
 	PixKeyTo          *PixKey  `valid:"-"`
-	Status            string   `json:"status" valid:"notnull"`
-	Description       string   `json:"description" valid:"notnull"`
-	CancelDescription string   `json:"cancel-description" valid:"notnull"`
+	PixKeyIdTo        string   `gorm:"column:pix_key_id_to;type:uuid;" valid:"notnull"`
+	Status            string   `json:"status" gorm:"type:varchar(20)" valid:"notnull"`
+	Description       string   `json:"description" gorm:"type:varchar(255)" valid:"-"`
+	CancelDescription string   `json:"cancel_description" gorm:"type:varchar(255)" valid:"-"`
 }
 
 //isValid perform validation of a pix transaction
@@ -54,7 +56,7 @@ func (transaction *Transaction) isValid() error {
 		return errors.New("invalid status for the transaction")
 	}
 
-	if transaction.PixKeyTo.AccountID == transaction.AccountForm.ID {
+	if transaction.PixKeyTo.AccountID == transaction.AccountFrom.ID {
 		return errors.New("the source and destination account cannot be the same")
 	}
 
@@ -67,7 +69,7 @@ func (transaction *Transaction) isValid() error {
 // NewTransaction return a new instance of a Transaction
 func NewTransaction(accountFrom *Account, amount float64, pixKeyTo *PixKey, description string) (*Transaction, error) {
 	transaction := Transaction{
-		AccountForm: accountFrom,
+		AccountFrom: accountFrom,
 		Amount:      amount,
 		PixKeyTo:    pixKeyTo,
 		Status:      TransactionPending,
