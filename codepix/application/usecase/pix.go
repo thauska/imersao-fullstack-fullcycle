@@ -4,7 +4,7 @@ import (
 	"github.com/thauska/imersao-fullstack-fullcycle/codepix/domain/model"
 )
 
-// PixKeyUseCase represents a use case for pix keys
+// PixUseCase represents a use case for pix keys
 type PixUseCase struct {
 	PixKeyRepository model.PixKeyRepositoryInterface
 }
