@@ -20,7 +20,7 @@ type PixKeyRepositoryInterface interface {
 // PixKey represents a model pix key
 type PixKey struct {
 	Base      `valid:"required"`
-	Kind      string   `json:"kind" gorm:"type:varchar(20)" valid:"notnull""`
+	Kind      string   `json:"kind" gorm:"type:varchar(20)" valid:"notnull"`
 	Key       string   `json:"key" gorm:"type:varchar(255)" valid:"notnull"`
 	AccountID string   `gorm:"column:account_id;type:uuid;not null" valid:"-"`
 	Account   *Account `valid:"-"`
