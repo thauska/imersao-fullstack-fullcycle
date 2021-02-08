@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
+	"github.com/thauska/imersao-fullstack-fullcycle/codepix/application/grpc"
 	"github.com/thauska/imersao-fullstack-fullcycle/codepix/infrastructure/db"
-	"google.golang.org/grpc"
 )
 
 var database *gorm.DB
