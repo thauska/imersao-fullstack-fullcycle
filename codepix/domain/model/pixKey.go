@@ -11,7 +11,7 @@ import (
 // PixKeyRepositoryInterface represents a interface of all operations
 type PixKeyRepositoryInterface interface {
 	RegisterKey(pixKey *PixKey) (*PixKey, error)
-	FindKeyByKind(kind string) (*PixKey, error)
+	FindKeyByKind(key string, kind string) (*PixKey, error)
 	AddBank(bank *Bank) error
 	AddAccount(account *Account) error
 	FindAccount(id string) (*Account, error)
