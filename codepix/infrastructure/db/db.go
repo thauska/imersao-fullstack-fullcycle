@@ -10,7 +10,10 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+
+	// blank import
 	_ "github.com/lib/pq"
+	// blank import
 	_ "gorm.io/driver/sqlite"
 )
 
