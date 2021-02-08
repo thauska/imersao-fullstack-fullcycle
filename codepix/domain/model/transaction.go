@@ -45,18 +45,18 @@ type Transaction struct {
 }
 
 //isValid perform validation of a pix transaction
-func (transaction *Transaction) isValid() error {
-	_, err := govalidator.ValidateStruct(transaction)
+func (t *Transaction) isValid() error {
+	_, err := govalidator.ValidateStruct(t)
 
-	if transaction.Amount <= 0 {
-		return errors.New("the amount must be greater then 0")
+	if t.Amount <= 0 {
+		return errors.New("the amount must be greater than 0")
 	}
 
-	if transaction.Status != TransactionPending && transaction.Status != TransactionCompleted && transaction.Status != TransactionError {
+	if t.Status != TransactionPending && t.Status != TransactionCompleted && t.Status != TransactionError {
 		return errors.New("invalid status for the transaction")
 	}
 
-	if transaction.PixKeyTo.AccountID == transaction.AccountFrom.ID {
+	if t.PixKeyTo.AccountID == t.AccountFromID {
 		return errors.New("the source and destination account cannot be the same")
 	}
 
@@ -69,45 +69,44 @@ func (transaction *Transaction) isValid() error {
 // NewTransaction return a new instance of a Transaction
 func NewTransaction(accountFrom *Account, amount float64, pixKeyTo *PixKey, description string) (*Transaction, error) {
 	transaction := Transaction{
-		AccountFrom: accountFrom,
-		Amount:      amount,
-		PixKeyTo:    pixKeyTo,
-		Status:      TransactionPending,
-		Description: description,
+		AccountFrom:   accountFrom,
+		AccountFromID: accountFrom.ID,
+		Amount:        amount,
+		PixKeyTo:      pixKeyTo,
+		PixKeyIdTo:    pixKeyTo.ID,
+		Status:        TransactionPending,
+		Description:   description,
 	}
-
 	transaction.ID = uuid.NewV4().String()
 	transaction.CreatedAt = time.Now()
-
 	err := transaction.isValid()
 	if err != nil {
 		return nil, err
 	}
-
 	return &transaction, nil
 }
 
 // Complete completes a transaction
-func (transaction *Transaction) Complete() error {
-	transaction.Status = TransactionCompleted
-	transaction.UpdatedAt = time.Now()
-	err := transaction.isValid()
+func (t *Transaction) Complete() error {
+	t.Status = TransactionCompleted
+	t.UpdatedAt = time.Now()
+	err := t.isValid()
 	return err
 }
 
 // Confirm confirm a transaction
-func (transaction *Transaction) Confirm() error {
-	transaction.Status = TransactionConfirmed
-	transaction.UpdatedAt = time.Now()
-	err := transaction.isValid()
+func (t *Transaction) Confirm() error {
+	t.Status = TransactionConfirmed
+	t.UpdatedAt = time.Now()
+	err := t.isValid()
 	return err
 }
 
 // Cancel cancels a transaction
-func (transaction *Transaction) Cancel(description string) error {
-	transaction.Status = TransactionError
-	transaction.UpdatedAt = time.Now()
-	transaction.Description = description
-	err := transaction.isValid()
+func (t *Transaction) Cancel(description string) error {
+	t.Status = TransactionError
+	t.CancelDescription = description
+	t.UpdatedAt = time.Now()
+	err := t.isValid()
 	return err
 }
